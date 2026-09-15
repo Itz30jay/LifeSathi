@@ -1,0 +1,46 @@
+# LifeSathi
+
+"Everything important in life, in one place." Personal life-management app —
+proactive reminders, expenses, documents, emergency response, tasks, and an
+AI assistant in one platform.
+
+## Structure: monorepo
+
+```
+LifeSathi/
+├── mobile/    React Native app
+├── backend/   Spring Boot REST API
+└── docs/      (reserved — architecture notes, ADRs, etc. as they come up)
+```
+
+**Why one repo instead of two:** this is a single small team (effectively
+one AI-assisted developer at this stage) shipping one product where the
+frontend and backend evolve together — a new field on `expenses` almost
+always touches both the migration and the RN screen in the same change.
+A monorepo keeps that change atomic (one commit, one PR) and keeps API
+contract drift visible immediately instead of across two repos with their
+own version histories to reconcile. The usual argument *for* separate repos
+— independent teams needing independent release cadences and access
+control — doesn't apply yet. If the project grows a separate mobile team
+and backend team later, splitting is a mechanical `git subtree split`, not
+a redesign.
+
+## Where things stand (Phase 1, in progress)
+
+- **`mobile/`** — Login and Dashboard screens built as presentation
+  components (design tokens, no navigation/API wiring yet). See
+  `mobile/src/README_DESIGN_NOTES.md` for open decisions (fonts, icons,
+  navigation library) flagged rather than added silently.
+- **`backend/`** — Spring Boot skeleton with Clerk JWT verification wired
+  up, one protected endpoint (`/api/me`), Neon Postgres schema created for
+  the Phase 1 tables (`users`, `tasks`, `reminders`, `expenses`,
+  `notifications`). See `backend/README.md` for what's real vs. stubbed.
+- **Not done yet**: actual Task/Reminder/Expense CRUD endpoints, screens
+  beyond Login/Dashboard, push notifications, and everything in Phase 2+.
+  Following the phase-order rule rather than building ahead.
+
+## Tech stack
+
+React Native · Spring Boot · PostgreSQL (Neon) · Clerk · Ollama (self-hosted
+AI, Phase 2+) · OpenStreetMap · Firebase Cloud Messaging · Render. All
+free-tier / open-source; MIT/Apache-2.0/BSD dependencies only.

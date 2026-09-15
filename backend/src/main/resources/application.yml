@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: lifesathi-backend
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      # Schema is owned by SQL migrations (run via the Neon MCP tool / a
+      # migration tool later, not by Hibernate). "validate" catches entity/
+      # column drift instead of silently altering production tables.
+      ddl-auto: validate
+    open-in-view: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${CLERK_JWKS_URL}
+
+lifesathi:
+  clerk:
+    issuer: ${CLERK_ISSUER}
+    permitted-origins: ${CLERK_PERMITTED_ORIGINS:}
+
+server:
+  port: ${PORT:8080}

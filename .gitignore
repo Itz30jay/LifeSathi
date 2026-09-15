@@ -1,0 +1,11 @@
+.DS_Store
+*.log
+
+# mobile (React Native) — ready for when package.json/native projects land
+mobile/node_modules/
+mobile/.expo/
+mobile/ios/Pods/
+mobile/ios/build/
+mobile/android/build/
+mobile/android/app/build/
+mobile/android/.gradle/
