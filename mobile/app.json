@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "LifeSathi",
+    "slug": "lifesathi",
+    "scheme": "lifesathi",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.lifesathi.app",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "com.lifesathi.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ]
+  }
+}

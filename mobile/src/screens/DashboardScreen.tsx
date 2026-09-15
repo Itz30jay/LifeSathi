@@ -14,7 +14,8 @@ type Props = {
   attentionItems: AttentionItem[];
   initialTasks: Task[];
   monthSpend: number;
-  monthBudget: number;
+  /** Null when the user hasn't set a monthly budget yet — see the render logic below. */
+  monthBudget: number | null;
   /** Called after a task is toggled locally — wire this to the real API in the backend pass. */
   onTaskToggle?: (taskId: string, done: boolean) => void;
 };
@@ -44,10 +45,12 @@ export default function DashboardScreen({
 }: Props) {
   const [tasks, setTasks] = useState(initialTasks);
 
-  const spendPct = useMemo(
-    () => Math.min(100, Math.round((monthSpend / monthBudget) * 100)),
-    [monthSpend, monthBudget]
-  );
+  // null, not 0/100 — a missing budget means "nothing to compare against
+  // yet", which is a different UI state than "fully used" or "unused".
+  const spendPct = useMemo(() => {
+    if (!monthBudget || monthBudget <= 0) return null;
+    return Math.min(100, Math.round((monthSpend / monthBudget) * 100));
+  }, [monthSpend, monthBudget]);
 
   const toggleTask = (id: string) => {
     setTasks((prev) =>
@@ -95,11 +98,15 @@ export default function DashboardScreen({
         <Text style={[styles.sectionLabel, styles.sectionSpacing]}>This month's spend</Text>
         <View style={styles.spendRow}>
           <Text style={styles.spendAmount}>{formatINR(monthSpend)}</Text>
-          <Text style={styles.spendOf}>of {formatINR(monthBudget)} budget</Text>
+          <Text style={styles.spendOf}>
+            {monthBudget ? `of ${formatINR(monthBudget)} budget` : 'this month'}
+          </Text>
         </View>
-        <View style={styles.progressTrack}>
-          <View style={[styles.progressFill, { width: `${spendPct}%` }]} />
-        </View>
+        {spendPct !== null && (
+          <View style={styles.progressTrack}>
+            <View style={[styles.progressFill, { width: `${spendPct}%` }]} />
+          </View>
+        )}
       </ScrollView>
     </View>
   );

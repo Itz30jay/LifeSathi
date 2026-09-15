@@ -27,19 +27,19 @@ a redesign.
 
 ## Where things stand (Phase 1, in progress)
 
-- **`mobile/`** — Login and Dashboard screens built as presentation
-  components (design tokens, no navigation/API wiring yet). See
-  `mobile/src/README_DESIGN_NOTES.md` for open decisions (fonts, icons,
-  navigation library) flagged rather than added silently.
+- **`mobile/`** — Expo Router app wired to real Clerk auth (email/password +
+  Google SSO) and the backend API. `npm install` and `npx tsc --noEmit` both
+  pass cleanly — see `mobile/README.md` for what that does and doesn't prove
+  (no live Clerk key or reachable backend to actually run it against yet).
 - **`backend/`** — Spring Boot skeleton with Clerk JWT verification, and
   full CRUD for tasks, reminders, and expenses (including the daily/weekly/
   monthly expense views and the dashboard spend summary). Neon Postgres
   schema live for the Phase 1 tables (`users`, `tasks`, `reminders`,
   `expenses`, `notifications`). See `backend/README.md` for what's real vs.
   stubbed.
-- **Not done yet**: wiring the RN screens to these endpoints, push
-  notifications (FCM), and everything in Phase 2+. Following the phase-order
-  rule rather than building ahead.
+- **Not done yet**: push notifications (FCM), sign-up/password-reset flows,
+  and everything in Phase 2+. Following the phase-order rule rather than
+  building ahead.
 
 ## Tech stack
 

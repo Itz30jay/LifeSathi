@@ -1,0 +1,40 @@
+import { apiFetch } from './client';
+
+export type ReminderType = 'ONE_TIME' | 'RECURRING';
+export type RecurrenceInterval = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+
+// Mirrors backend/.../reminder/ReminderResponse.java
+export interface ReminderResponse {
+  id: string;
+  title: string;
+  type: ReminderType;
+  remindAt: string;
+  recurrenceInterval: RecurrenceInterval | null;
+  active: boolean;
+}
+
+export interface ReminderRequest {
+  title: string;
+  type: ReminderType;
+  remindAt: string;
+  // Required when type is RECURRING, must be omitted for ONE_TIME — the
+  // backend enforces this (400 on mismatch); mirror it client-side too so
+  // the form can validate before it ever hits the network.
+  recurrenceInterval?: RecurrenceInterval | null;
+}
+
+export function fetchReminders(token: string | null): Promise<ReminderResponse[]> {
+  return apiFetch<ReminderResponse[]>('/api/reminders', { token });
+}
+
+export function createReminder(token: string | null, request: ReminderRequest): Promise<ReminderResponse> {
+  return apiFetch<ReminderResponse>('/api/reminders', { method: 'POST', body: request, token });
+}
+
+export function setReminderActive(token: string | null, id: string, active: boolean): Promise<ReminderResponse> {
+  return apiFetch<ReminderResponse>(`/api/reminders/${id}/active`, { method: 'PATCH', body: { active }, token });
+}
+
+export function deleteReminder(token: string | null, id: string): Promise<void> {
+  return apiFetch<void>(`/api/reminders/${id}`, { method: 'DELETE', token });
+}
