@@ -1,0 +1,62 @@
+package com.lifesathi.backend.reminder;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.Instant;
+import java.util.UUID;
+
+/**
+ * One-time or recurring reminder. Cascading multi-offset reminders
+ * (45/30/15/7/1-day chains generated from a single expiry date) are Phase 2
+ * — this entity intentionally only models a single trigger time per row.
+ */
+@Entity
+@Table(name = "reminders")
+@Getter
+@Setter
+@NoArgsConstructor
+public class Reminder {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
+
+    @Column(nullable = false)
+    private String title;
+
+    // Both `type` and `recurrence_interval` are native Postgres ENUMs — see
+    // the @JdbcTypeCode note in task/Task.java for why this annotation
+    // matters with ddl-auto=validate.
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(nullable = false)
+    private ReminderType type;
+
+    @Column(name = "remind_at", nullable = false)
+    private Instant remindAt;
+
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "recurrence_interval")
+    private RecurrenceInterval recurrenceInterval;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean active = true;
+
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
+    private Instant updatedAt;
+}

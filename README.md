@@ -31,13 +31,15 @@ a redesign.
   components (design tokens, no navigation/API wiring yet). See
   `mobile/src/README_DESIGN_NOTES.md` for open decisions (fonts, icons,
   navigation library) flagged rather than added silently.
-- **`backend/`** — Spring Boot skeleton with Clerk JWT verification wired
-  up, one protected endpoint (`/api/me`), Neon Postgres schema created for
-  the Phase 1 tables (`users`, `tasks`, `reminders`, `expenses`,
-  `notifications`). See `backend/README.md` for what's real vs. stubbed.
-- **Not done yet**: actual Task/Reminder/Expense CRUD endpoints, screens
-  beyond Login/Dashboard, push notifications, and everything in Phase 2+.
-  Following the phase-order rule rather than building ahead.
+- **`backend/`** — Spring Boot skeleton with Clerk JWT verification, and
+  full CRUD for tasks, reminders, and expenses (including the daily/weekly/
+  monthly expense views and the dashboard spend summary). Neon Postgres
+  schema live for the Phase 1 tables (`users`, `tasks`, `reminders`,
+  `expenses`, `notifications`). See `backend/README.md` for what's real vs.
+  stubbed.
+- **Not done yet**: wiring the RN screens to these endpoints, push
+  notifications (FCM), and everything in Phase 2+. Following the phase-order
+  rule rather than building ahead.
 
 ## Tech stack
 

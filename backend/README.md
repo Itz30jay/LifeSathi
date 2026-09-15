@@ -26,9 +26,25 @@ verifies Clerk-issued JWTs, it never stores a password.
   once Clerk is connected: create the Clerk app, drop its Frontend API URL
   into `.env`, and hit `/api/me` with a real session token from the mobile
   app to confirm end-to-end.
-- **`/api/me`**: the only business endpoint so far — proves the auth chain
-  works and just-in-time-provisions a `users` row. Tasks/reminders/expenses
-  endpoints come next, per phase order.
+- **`/api/me`**: proves the auth chain works and just-in-time-provisions a
+  `users` row.
+- **`/api/tasks`**: full CRUD + `PATCH /{id}/completed`. Priority defaults to
+  `MEDIUM` if omitted.
+- **`/api/reminders`**: full CRUD + `PATCH /{id}/active` (pause/resume).
+  `type=RECURRING` requires `recurrenceInterval`; `type=ONE_TIME` requires it
+  be omitted — enforced server-side with a 400, mirroring the DB's
+  `recurring_needs_interval` CHECK constraint. Cascading multi-offset
+  reminders (45/30/15/7/1-day chains) are Phase 2, not built here.
+- **`/api/expenses`**: full CRUD, plus `GET /api/expenses?period=MONTHLY` and
+  `GET /api/expenses/summary?period=MONTHLY` (the latter backs the
+  dashboard's spend widget — returns total, budget from `users.monthly_budget`,
+  and count for the period). `period` is `DAILY` | `WEEKLY` | `MONTHLY`,
+  case-sensitive. Period boundaries are computed in `Asia/Kolkata` — see the
+  comment in `ExpenseService` for why that's a reasonable fixed default for
+  now rather than genuinely per-user timezone logic.
+- Every list/update/delete endpoint scopes its query by the authenticated
+  user's id, not just the row id — see the comment on `findByIdAndUserId` in
+  each repository for why that matters.
 
 ## Note on verification
 
