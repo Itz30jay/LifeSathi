@@ -14,7 +14,7 @@ export default function Index() {
     );
   }
 
-  return <Redirect href={isSignedIn ? '/(app)/dashboard' : '/sign-in'} />;
+  return <Redirect href={isSignedIn ? '/(app)' : '/sign-in'} />;
 }
 
 const styles = {

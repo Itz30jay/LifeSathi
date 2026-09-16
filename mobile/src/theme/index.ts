@@ -58,3 +58,14 @@ export const urgencyColor: Record<Urgency, string> = {
   soon: colors.amber,
   fine: colors.teal,
 };
+
+export type TaskPriority = 'HIGH' | 'MEDIUM' | 'LOW';
+
+// Deliberately reuses the same 3-color language as urgency (coral/amber/
+// teal) rather than inventing a second palette — "high priority" and
+// "urgent" both mean "look at this first", so they should look the same.
+export const priorityColor: Record<TaskPriority, string> = {
+  HIGH: colors.coral,
+  MEDIUM: colors.amber,
+  LOW: colors.teal,
+};

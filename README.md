@@ -27,10 +27,13 @@ a redesign.
 
 ## Where things stand (Phase 1, in progress)
 
-- **`mobile/`** — Expo Router app wired to real Clerk auth (email/password +
-  Google SSO) and the backend API. `npm install` and `npx tsc --noEmit` both
-  pass cleanly — see `mobile/README.md` for what that does and doesn't prove
-  (no live Clerk key or reachable backend to actually run it against yet).
+- **`mobile/`** — Expo Router app with real Clerk auth (email/password +
+  Google SSO) and a 4-tab shell (Home/Tasks/Reminders/Expenses), each tab
+  doing full create/read/update/delete against the backend — not just the
+  dashboard read-only view from the previous pass. `npm install` and
+  `npx tsc --noEmit` both pass cleanly — see `mobile/README.md` for what
+  that does and doesn't prove (no live Clerk key or reachable backend to
+  actually run it against yet).
 - **`backend/`** — Spring Boot skeleton with Clerk JWT verification, and
   full CRUD for tasks, reminders, and expenses (including the daily/weekly/
   monthly expense views and the dashboard spend summary). Neon Postgres
@@ -38,8 +41,8 @@ a redesign.
   `expenses`, `notifications`). See `backend/README.md` for what's real vs.
   stubbed.
 - **Not done yet**: push notifications (FCM), sign-up/password-reset flows,
-  and everything in Phase 2+. Following the phase-order rule rather than
-  building ahead.
+  task due dates in the UI, and everything in Phase 2+. Following the
+  phase-order rule rather than building ahead.
 
 ## Tech stack
 

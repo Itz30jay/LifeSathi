@@ -48,13 +48,16 @@ explaining why. Worth re-checking next time Clerk is upgraded.
 ```
 app/                    Expo Router routes (file-based)
   _layout.tsx           Wraps everything in ClerkProvider
-  index.tsx             Redirects to /sign-in or /(app)/dashboard
+  index.tsx             Redirects to /sign-in or /(app)
   sign-in.tsx           Wires LoginScreen to real Clerk sign-in + Google SSO
-  (app)/_layout.tsx     Redirects signed-out users back to /sign-in
-  (app)/dashboard.tsx   Fetches profile/tasks/reminders/expenses, wires DashboardScreen
+  (app)/_layout.tsx     Tab bar (Home/Tasks/Reminders/Expenses) + auth guard
+  (app)/index.tsx       Home/dashboard tab
+  (app)/tasks.tsx       Task list + add form, full CRUD against the API
+  (app)/reminders.tsx   Reminder list + add form (native date/time picker)
+  (app)/expenses.tsx    Expense list + add form, re-pulls the month summary after writes
 src/
   screens/              Presentation-only components (no auth/API calls)
-  components/           Shared UI pieces (buttons, fields, list rows)
+  components/           Shared UI pieces (buttons, fields, list rows, segmented control)
   theme/                Design tokens
   api/                  Typed fetch wrappers, one file per backend resource
   lib/attention.ts      Derives the "needs your attention" list from reminders
@@ -62,11 +65,20 @@ src/
                          reminder feed — see the comment in that file)
 ```
 
+One new dependency this pass: `@react-native-community/datetimepicker` (MIT,
+Expo-compatible from SDK 52+) — reminders fundamentally need a real date/time
+picker, there's no reasonable way around it. Everything else in `theme`/
+`components` was reused rather than adding a picker/UI-kit library.
+
 ## Still open (flagged, not added silently)
 
 - **Icon library** and **custom font linking** (Manrope/Inter) — cosmetic,
-  deferred since they weren't needed to get real data flowing.
+  deferred since they weren't needed to get real data flowing. Tab bar is
+  text-only for the same reason.
 - **Sign-up and password-reset flows** — real multi-step Clerk flows
   (email verification, etc.); `sign-in.tsx` shows "coming soon" for both
   rather than faking them.
 - **FCM push notifications** — Phase 1 module #6, not started.
+- **Task due dates** — the backend supports them; the add-task form doesn't
+  expose a date field yet (kept the form to title + priority for this pass;
+  same date-picker component from Reminders would cover it as a fast-follow).
