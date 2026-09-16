@@ -77,13 +77,8 @@ export default function SignInRoute() {
       loading={loading}
       onContinue={handleContinue}
       onGooglePress={handleGoogle}
-      // Password reset and sign-up are real, multi-step Clerk flows
-      // (email verification, etc.) that are out of scope for this pass —
-      // flagged honestly rather than left as dead buttons or faked.
-      onForgotPassword={() => Alert.alert('Coming soon', "Password reset isn't built yet.")}
-      onCreateAccount={() =>
-        Alert.alert('Coming soon', 'Self-serve sign-up isn\'t built yet — ask an admin to create your account.')
-      }
+      onForgotPassword={() => router.push('/forgot-password')}
+      onCreateAccount={() => router.push('/sign-up')}
     />
   );
 }
