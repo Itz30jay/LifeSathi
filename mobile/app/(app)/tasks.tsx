@@ -15,7 +15,15 @@ export default function TasksRoute() {
     try {
       const token = await getToken();
       const remote = await fetchTasks(token);
-      setTasks(remote.map((t) => ({ id: t.id, title: t.title, priority: t.priority, completed: t.completed })));
+      setTasks(
+        remote.map((t) => ({
+          id: t.id,
+          title: t.title,
+          priority: t.priority,
+          completed: t.completed,
+          dueDate: t.dueDate,
+        }))
+      );
       setError(null);
     } catch (err: any) {
       setError(err?.message ?? 'Could not load tasks.');
@@ -26,13 +34,23 @@ export default function TasksRoute() {
     void load();
   }, [load]);
 
-  const handleCreate = async (input: { title: string; priority: TaskItem['priority'] }) => {
+  const handleCreate = async (input: { title: string; priority: TaskItem['priority']; dueDate: Date | null }) => {
     setCreating(true);
     try {
       const token = await getToken();
-      const created = await createTask(token, { title: input.title, priority: input.priority });
+      const created = await createTask(token, {
+        title: input.title,
+        priority: input.priority,
+        dueDate: input.dueDate ? input.dueDate.toISOString() : null,
+      });
       setTasks((prev) => [
-        { id: created.id, title: created.title, priority: created.priority, completed: created.completed },
+        {
+          id: created.id,
+          title: created.title,
+          priority: created.priority,
+          completed: created.completed,
+          dueDate: created.dueDate,
+        },
         ...(prev ?? []),
       ]);
     } catch (err: any) {
