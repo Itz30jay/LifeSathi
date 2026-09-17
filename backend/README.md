@@ -45,6 +45,21 @@ verifies Clerk-issued JWTs, it never stores a password.
 - Every list/update/delete endpoint scopes its query by the authenticated
   user's id, not just the row id — see the comment on `findByIdAndUserId` in
   each repository for why that matters.
+- **`/api/device-tokens`**: POST to register a device's FCM token (upsert by
+  token, so a device switching accounts moves over rather than duplicating),
+  DELETE to unregister on sign-out.
+- **`/api/notifications`**: read-only history of what's actually been sent
+  to the user (as opposed to what's merely scheduled).
+- **Reminder → push notification loop**: `ReminderNotificationScheduler`
+  polls once a minute for reminders whose time has arrived, sends a push via
+  `PushNotificationService`, records a `Notification` row, and either
+  deactivates the reminder (ONE_TIME) or advances it to its next occurrence
+  (RECURRING). This is what makes a "reminder" actually remind you, rather
+  than just being a to-do list entry with a timestamp.
+- **Firebase isn't configured yet** — no Firebase project exists in this
+  workspace (no MCP connector for Firebase, same situation as Clerk). Until
+  `FIREBASE_SERVICE_ACCOUNT_BASE64` is set, `PushNotificationService` no-ops
+  with a log line rather than crashing the app — see `FirebaseConfig`.
 
 ## Note on verification
 
@@ -54,3 +69,17 @@ major version than commonly-cached training knowledge. It has **not** been
 compiled in this environment — the sandbox used to build it has no route to
 Maven Central, only to a small allowlist of package registries. Run
 `mvn compile` and `mvn test` locally as the first real check.
+
+Two more version-specific things worth knowing about, found while adding
+push notifications:
+
+- **`org.springframework.lang.Nullable` is deprecated** as of Spring
+  Framework 7 (which Boot 4.1 uses) in favor of `org.jspecify.annotations.Nullable`
+  — the latter is what `FirebaseConfig`/`PushNotificationService` use. No
+  extra Maven dependency needed; JSpecify comes in transitively via Spring
+  Framework itself.
+- **Firebase Admin SDK 9.10.0 deprecated `Message.Builder.setToken()`** in
+  favor of Firebase Installation IDs (FIDs) — a distinct concept from the
+  registration tokens client SDKs still hand back, and not yet mainstream.
+  `PushNotificationService` still uses `setToken()` deliberately (deprecated,
+  not removed) with a comment explaining why.

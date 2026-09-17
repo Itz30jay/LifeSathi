@@ -12,11 +12,13 @@
       "supportsTablet": false
     },
     "android": {
-      "package": "com.lifesathi.app"
+      "package": "com.lifesathi.app",
+      "googleServicesFile": "./google-services.json"
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@react-native-firebase/app"
     ]
   }
 }

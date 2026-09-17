@@ -27,22 +27,30 @@ a redesign.
 
 ## Where things stand (Phase 1, in progress)
 
-- **`mobile/`** — Expo Router app with real Clerk auth (email/password +
-  Google SSO) and a 4-tab shell (Home/Tasks/Reminders/Expenses), each tab
-  doing full create/read/update/delete against the backend — not just the
-  dashboard read-only view from the previous pass. `npm install` and
-  `npx tsc --noEmit` both pass cleanly — see `mobile/README.md` for what
-  that does and doesn't prove (no live Clerk key or reachable backend to
-  actually run it against yet).
-- **`backend/`** — Spring Boot skeleton with Clerk JWT verification, and
-  full CRUD for tasks, reminders, and expenses (including the daily/weekly/
-  monthly expense views and the dashboard spend summary). Neon Postgres
-  schema live for the Phase 1 tables (`users`, `tasks`, `reminders`,
-  `expenses`, `notifications`). See `backend/README.md` for what's real vs.
-  stubbed.
-- **Not done yet**: push notifications (FCM), sign-up/password-reset flows,
-  task due dates in the UI, and everything in Phase 2+. Following the
-  phase-order rule rather than building ahead.
+- **`mobile/`** — Expo Router app with real Clerk auth (sign-in, sign-up,
+  password reset, Google SSO), a 4-tab shell (Home/Tasks/Reminders/
+  Expenses) with full CRUD against the backend, task due dates, and FCM
+  push notification registration. `npm install` and `npx tsc --noEmit` both
+  pass cleanly — see `mobile/README.md` for what that does and doesn't
+  prove, and for a workflow change worth knowing about (native Firebase
+  code means Expo Go alone isn't enough anymore — a dev client build is
+  needed to actually test push on a device).
+- **`backend/`** — Spring Boot skeleton with Clerk JWT verification, full
+  CRUD for tasks/reminders/expenses, and a scheduler that turns due
+  reminders into real push notifications via Firebase Admin SDK (with a
+  graceful no-op when Firebase isn't configured, same pattern as the Clerk
+  placeholder values). Neon Postgres schema live for all Phase 1 tables
+  including `device_tokens`, added this pass. See `backend/README.md`.
+- **Every Phase 1 module now has code**, though two things can't be tested
+  end-to-end yet because they need real accounts only a human can create in
+  a browser: a live Clerk application, and a live Firebase project.
+- **Deployment**: a `Dockerfile` exists for Render (no native Java runtime
+  in Render's deploy tooling, so Docker is the path). Two Render deploy
+  attempts happened mid-project and are documented in the commit history
+  for reference, but deploying is being handled by the project owner
+  directly rather than through this session from here on.
+- **Not done yet**: everything in Phase 2+. Following the phase-order rule
+  rather than building ahead.
 
 ## Tech stack
 

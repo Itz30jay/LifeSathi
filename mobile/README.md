@@ -43,6 +43,18 @@ flow docs teach. The classic shape still exists at the `@clerk/expo/legacy`
 subpath — that's what `app/sign-in.tsx` imports from, with a comment
 explaining why. Worth re-checking next time Clerk is upgraded.
 
+**Push notifications changed the dev workflow.** `@react-native-firebase/*`
+needs native code, so the app can no longer run in plain Expo Go — it needs
+a custom dev client (`npx expo prebuild` + a local or EAS build). EAS
+Build's free tier covers this but has a monthly build-count limit. Also
+worth knowing: `@react-native-firebase/messaging` v26 moved to a fully
+modular API (`getToken(messaging, ...)` rather than the older
+`messaging().getToken()` singleton style) and deprecated its own
+`requestPermission()` — confirmed by reading the installed package's own
+type definitions rather than assumed, since it would have been an easy
+thing to get wrong from memory. Permission requests go through
+`expo-notifications` instead (see `src/lib/pushNotifications.ts`).
+
 ## Structure
 
 ```
@@ -63,6 +75,7 @@ src/
   lib/attention.ts      Derives the "needs your attention" list from reminders
                          (client-side stand-in for the Phase 2 cascading-
                          reminder feed — see the comment in that file)
+  lib/pushNotifications.ts  FCM token registration + foreground message handling
 ```
 
 One new dependency this pass: `@react-native-community/datetimepicker` (MIT,
@@ -70,15 +83,26 @@ Expo-compatible from SDK 52+) — reminders fundamentally need a real date/time
 picker, there's no reasonable way around it. Everything else in `theme`/
 `components` was reused rather than adding a picker/UI-kit library.
 
+For push notifications: `@react-native-firebase/app` + `@react-native-firebase/messaging`
+(Apache-2.0) for FCM itself, plus `expo-notifications` (MIT) for permission
+requests specifically — see the note below on why two libraries are involved.
+
 ## Still open (flagged, not added silently)
 
 - **Icon library** and **custom font linking** (Manrope/Inter) — cosmetic,
   deferred since they weren't needed to get real data flowing. Tab bar is
   text-only for the same reason.
-- **Sign-up and password-reset flows** — real multi-step Clerk flows
-  (email verification, etc.); `sign-in.tsx` shows "coming soon" for both
-  rather than faking them.
-- **FCM push notifications** — Phase 1 module #6, not started.
-- **Task due dates** — the backend supports them; the add-task form doesn't
-  expose a date field yet (kept the form to title + priority for this pass;
-  same date-picker component from Reminders would cover it as a fast-follow).
+- **Clerk Dashboard setting to check once a real Clerk app exists**: native
+  apps can't render a CAPTCHA challenge, so if bot protection is on by
+  default, `signUp.create()` may need the "Native API" option enabled in
+  Clerk Dashboard → Configure → Attack protection. Not something to fix in
+  code — just a setting to check when Clerk is actually connected.
+- **A real Firebase project** — same category of blocker as Clerk (needs a
+  human in a browser, no MCP connector for it). Until then, push setup fails
+  silently on launch (caught and logged, doesn't crash the app — see the
+  try/catch in `app/(app)/_layout.tsx`).
+- **`google-services.json`** — gitignored, needs adding once a Firebase
+  Android app exists (Firebase Console → Project Settings → your app →
+  download `google-services.json` → drop it in `mobile/`).
+- **A dev client build** — needed the first time to actually test push
+  notifications on a device, since Expo Go can't load native Firebase code.

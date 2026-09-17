@@ -22,6 +22,8 @@ lifesathi:
   clerk:
     issuer: ${CLERK_ISSUER}
     permitted-origins: ${CLERK_PERMITTED_ORIGINS:}
+  firebase:
+    service-account-base64: ${FIREBASE_SERVICE_ACCOUNT_BASE64:}
 
 server:
   port: ${PORT:8080}

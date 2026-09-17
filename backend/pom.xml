@@ -53,6 +53,12 @@
       <artifactId>lombok</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-admin</artifactId>
+      <!-- 9.10.0 confirmed current stable as of this session (Jul 2026 release) -->
+      <version>9.10.0</version>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
