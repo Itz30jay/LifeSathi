@@ -67,6 +67,8 @@ app/                    Expo Router routes (file-based)
   (app)/tasks.tsx       Task list + add form, full CRUD against the API
   (app)/reminders.tsx   Reminder list + add form (native date/time picker)
   (app)/expenses.tsx    Expense list + add form, re-pulls the month summary after writes
+  (app)/profile.tsx     View/edit name, language, monthly budget; sign out (incl.
+                         unregistering the device's FCM token)
 src/
   screens/              Presentation-only components (no auth/API calls)
   components/           Shared UI pieces (buttons, fields, list rows, segmented control)

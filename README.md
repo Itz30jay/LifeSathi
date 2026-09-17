@@ -28,29 +28,34 @@ a redesign.
 ## Where things stand (Phase 1, in progress)
 
 - **`mobile/`** — Expo Router app with real Clerk auth (sign-in, sign-up,
-  password reset, Google SSO), a 4-tab shell (Home/Tasks/Reminders/
-  Expenses) with full CRUD against the backend, task due dates, and FCM
-  push notification registration. `npm install` and `npx tsc --noEmit` both
-  pass cleanly — see `mobile/README.md` for what that does and doesn't
-  prove, and for a workflow change worth knowing about (native Firebase
-  code means Expo Go alone isn't enough anymore — a dev client build is
-  needed to actually test push on a device).
+  password reset, Google SSO), a 5-tab shell (Home/Tasks/Reminders/
+  Expenses/Profile) with full CRUD against the backend, task due dates, FCM
+  push notification registration, and now a Profile tab (edit name/language/
+  monthly budget, sign out — including unregistering the device's push
+  token). `npm install` and `npx tsc --noEmit` both pass cleanly — see
+  `mobile/README.md` for what that does and doesn't prove, and for a
+  workflow change worth knowing about (native Firebase code means Expo Go
+  alone isn't enough anymore — a dev client build is needed to actually
+  test push on a device).
 - **`backend/`** — Spring Boot skeleton with Clerk JWT verification, full
-  CRUD for tasks/reminders/expenses, and a scheduler that turns due
-  reminders into real push notifications via Firebase Admin SDK (with a
-  graceful no-op when Firebase isn't configured, same pattern as the Clerk
-  placeholder values). Neon Postgres schema live for all Phase 1 tables
-  including `device_tokens`, added this pass. See `backend/README.md`.
-- **Every Phase 1 module now has code**, though two things can't be tested
-  end-to-end yet because they need real accounts only a human can create in
-  a browser: a live Clerk application, and a live Firebase project.
+  CRUD for tasks/reminders/expenses, a scheduler that turns due reminders
+  into real push notifications via Firebase Admin SDK, and now a profile
+  update endpoint (`PUT /api/me`). Neon Postgres schema live for all Phase 1
+  tables. See `backend/README.md`.
+- **Phase 1 module status**: every module has code now except phone-OTP
+  sign-in specifically (email/password and Google are both wired) — that
+  needs an SMS provider configured in a live Clerk dashboard before there's
+  anything to build against, same category of blocker as the rest of Clerk.
+  Sign-out was a real gap until this pass: there was previously no way to
+  leave the app once signed in.
 - **Deployment**: a `Dockerfile` exists for Render (no native Java runtime
   in Render's deploy tooling, so Docker is the path). Two Render deploy
   attempts happened mid-project and are documented in the commit history
   for reference, but deploying is being handled by the project owner
   directly rather than through this session from here on.
-- **Not done yet**: everything in Phase 2+. Following the phase-order rule
-  rather than building ahead.
+- **Not done yet**: phone OTP sign-in (blocked on a live Clerk dashboard),
+  and everything in Phase 2+. Following the phase-order rule rather than
+  building ahead.
 
 ## Tech stack
 

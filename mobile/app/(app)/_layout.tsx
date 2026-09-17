@@ -49,6 +49,7 @@ export default function AppLayout() {
       <Tabs.Screen name="tasks" options={{ title: 'Tasks' }} />
       <Tabs.Screen name="reminders" options={{ title: 'Reminders' }} />
       <Tabs.Screen name="expenses" options={{ title: 'Expenses' }} />
+      <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
     </Tabs>
   );
 }

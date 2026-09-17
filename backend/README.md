@@ -26,8 +26,10 @@ verifies Clerk-issued JWTs, it never stores a password.
   once Clerk is connected: create the Clerk app, drop its Frontend API URL
   into `.env`, and hit `/api/me` with a real session token from the mobile
   app to confirm end-to-end.
-- **`/api/me`**: proves the auth chain works and just-in-time-provisions a
-  `users` row.
+- **`/api/me`**: GET proves the auth chain works and just-in-time-provisions
+  a `users` row. PUT updates the fields Clerk doesn't own — `fullName`,
+  `preferredLanguage` (en/hi/or, matching the DB CHECK constraint), and
+  `monthlyBudget` (feeds the dashboard/expenses spend widgets directly).
 - **`/api/tasks`**: full CRUD + `PATCH /{id}/completed`. Priority defaults to
   `MEDIUM` if omitted.
 - **`/api/reminders`**: full CRUD + `PATCH /{id}/active` (pause/resume).
