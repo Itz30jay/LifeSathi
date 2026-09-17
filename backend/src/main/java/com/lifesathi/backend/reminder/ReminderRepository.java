@@ -19,4 +19,7 @@ public interface ReminderRepository extends JpaRepository<Reminder, UUID> {
     List<Reminder> findByActiveTrueAndRemindAtLessThanEqual(Instant now);
 
     List<Reminder> findByChainIdOrderByRemindAtAsc(UUID chainId);
+
+    List<Reminder> findByUserIdAndActiveTrueAndRemindAtGreaterThanEqualAndRemindAtLessThan(
+            UUID userId, Instant start, Instant endExclusive);
 }

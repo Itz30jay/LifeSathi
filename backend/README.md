@@ -38,6 +38,13 @@ verifies Clerk-issued JWTs, it never stores a password.
   `recurring_needs_interval` CHECK constraint. Cascading multi-offset
   reminders now exist too — see `/api/reminder-chains` below rather than
   this endpoint for those.
+- **`/api/calendar`**: Phase 2 module #9. Read-only merge of task due dates,
+  active reminders, and reminder-chain target (expiry) dates into one
+  sorted timeline for a given month (`?year=&month=`, both optional —
+  defaults to the current month). Nothing is stored here; it queries the
+  three existing tables directly and merges in Java. Paused/deactivated
+  reminders and cancelled chains are excluded — a calendar shows what's
+  still going to happen, not a history of what used to be scheduled.
 - **`/api/expenses`**: full CRUD, plus `GET /api/expenses?period=MONTHLY` and
   `GET /api/expenses/summary?period=MONTHLY` (the latter backs the
   dashboard's spend widget — returns total, budget from `users.monthly_budget`,

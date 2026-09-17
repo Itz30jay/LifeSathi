@@ -69,6 +69,8 @@ app/                    Expo Router routes (file-based)
                          cascades (Phase 2's headline feature: give a title +
                          expiry date, get 45/30/15/7/1-day reminders back)
   (app)/expenses.tsx    Expense list + add form, re-pulls the month summary after writes
+  (app)/calendar.tsx    Month agenda merging task due dates, reminders, and
+                         expiry dates into one timeline (Phase 2 module #9)
   (app)/profile.tsx     View/edit name, language, monthly budget; sign out (incl.
                          unregistering the device's FCM token)
 src/
@@ -95,7 +97,8 @@ requests specifically — see the note below on why two libraries are involved.
 
 - **Icon library** and **custom font linking** (Manrope/Inter) — cosmetic,
   deferred since they weren't needed to get real data flowing. Tab bar is
-  text-only for the same reason.
+  text-only for the same reason — now at 6 tabs (added Calendar), which is
+  starting to feel tight without icons to shrink the labels visually.
 - **Clerk Dashboard setting to check once a real Clerk app exists**: native
   apps can't render a CAPTCHA challenge, so if bot protection is on by
   default, `signUp.create()` may need the "Native API" option enabled in

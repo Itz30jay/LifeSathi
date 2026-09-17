@@ -69,3 +69,13 @@ export const priorityColor: Record<TaskPriority, string> = {
   MEDIUM: colors.amber,
   LOW: colors.teal,
 };
+
+export type CalendarEventType = 'TASK' | 'REMINDER' | 'EXPIRY';
+
+// EXPIRY (the actual due/expiry date itself) gets the most attention-
+// grabbing color, same reasoning as urgency/priority above.
+export const calendarEventColor: Record<CalendarEventType, string> = {
+  TASK: colors.teal,
+  REMINDER: colors.amber,
+  EXPIRY: colors.coral,
+};
