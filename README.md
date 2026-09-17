@@ -25,37 +25,43 @@ control — doesn't apply yet. If the project grows a separate mobile team
 and backend team later, splitting is a mechanical `git subtree split`, not
 a redesign.
 
-## Where things stand (Phase 1, in progress)
+## Where things stand
 
-- **`mobile/`** — Expo Router app with real Clerk auth (sign-in, sign-up,
-  password reset, Google SSO), a 5-tab shell (Home/Tasks/Reminders/
-  Expenses/Profile) with full CRUD against the backend, task due dates, FCM
-  push notification registration, and now a Profile tab (edit name/language/
-  monthly budget, sign out — including unregistering the device's push
-  token). `npm install` and `npx tsc --noEmit` both pass cleanly — see
-  `mobile/README.md` for what that does and doesn't prove, and for a
-  workflow change worth knowing about (native Firebase code means Expo Go
-  alone isn't enough anymore — a dev client build is needed to actually
-  test push on a device).
-- **`backend/`** — Spring Boot skeleton with Clerk JWT verification, full
-  CRUD for tasks/reminders/expenses, a scheduler that turns due reminders
-  into real push notifications via Firebase Admin SDK, and now a profile
-  update endpoint (`PUT /api/me`). Neon Postgres schema live for all Phase 1
-  tables. See `backend/README.md`.
-- **Phase 1 module status**: every module has code now except phone-OTP
-  sign-in specifically (email/password and Google are both wired) — that
-  needs an SMS provider configured in a live Clerk dashboard before there's
-  anything to build against, same category of blocker as the rest of Clerk.
-  Sign-out was a real gap until this pass: there was previously no way to
-  leave the app once signed in.
+**Phase 1 — code-complete**, with one item that can't be built further
+without a live Clerk dashboard (phone-OTP sign-in needs an SMS provider
+configured there first). Everything else — auth (email/password + Google),
+dashboard, tasks, reminders, expenses, push notifications, and a profile
+screen with sign-out — has real code behind it, not just UI mockups.
+
+**Phase 2 — started.** First feature: cascading reminders (module #8), the
+app's headline "proactive, not reactive" differentiator, and the natural
+first pick since it builds directly on Phase 1's reminder system with no
+new external accounts needed (unlike almost everything else in Phase 2,
+which needs Ollama, Cloudinary, or native voice modules).
+
+- **`mobile/`** — Expo Router app: Clerk auth (sign-in, sign-up, password
+  reset, Google SSO), a 5-tab shell (Home/Tasks/Reminders/Expenses/Profile)
+  with full CRUD against the backend, task due dates, FCM push notification
+  registration, and now expiry cascades in the Reminders tab. `npm install`
+  and `npx tsc --noEmit` both pass cleanly — see `mobile/README.md` for what
+  that does and doesn't prove, and for a workflow change worth knowing about
+  (native Firebase code means Expo Go alone isn't enough anymore — a dev
+  client build is needed to actually test push on a device).
+- **`backend/`** — Spring Boot: Clerk JWT verification, full CRUD for
+  tasks/reminders/expenses, a scheduler that turns due reminders into real
+  push notifications, a profile update endpoint, and now
+  `/api/reminder-chains` for generating a 45/30/15/7/1-day cascade from one
+  expiry date. Neon Postgres schema live for every table listed in the
+  original spec plus `device_tokens` and `reminder_chains`. See
+  `backend/README.md`.
 - **Deployment**: a `Dockerfile` exists for Render (no native Java runtime
   in Render's deploy tooling, so Docker is the path). Two Render deploy
   attempts happened mid-project and are documented in the commit history
   for reference, but deploying is being handled by the project owner
   directly rather than through this session from here on.
-- **Not done yet**: phone OTP sign-in (blocked on a live Clerk dashboard),
-  and everything in Phase 2+. Following the phase-order rule rather than
-  building ahead.
+- **Not done yet**: phone OTP sign-in, unified calendar, expense analytics,
+  document manager, "Ask LifeSathi", voice input, AI voice briefing, smart
+  suggestions (Phase 2 modules #9–15), and everything in Phase 3–4.
 
 ## Tech stack
 

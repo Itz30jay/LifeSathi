@@ -18,7 +18,7 @@ verifies Clerk-issued JWTs, it never stores a password.
 
 - **Database**: real — points at the Neon Postgres project created via the
   Neon MCP tool this session (`users`, `tasks`, `reminders`, `expenses`,
-  `notifications` tables exist).
+  `notifications`, `device_tokens`, `reminder_chains` tables exist).
 - **Auth**: the verification side is real (JWKS-based JWT check, issuer +
   azp validation). It has NOT been tested against a real Clerk instance yet
   because no Clerk application has been created in this session — Clerk
@@ -36,7 +36,8 @@ verifies Clerk-issued JWTs, it never stores a password.
   `type=RECURRING` requires `recurrenceInterval`; `type=ONE_TIME` requires it
   be omitted — enforced server-side with a 400, mirroring the DB's
   `recurring_needs_interval` CHECK constraint. Cascading multi-offset
-  reminders (45/30/15/7/1-day chains) are Phase 2, not built here.
+  reminders now exist too — see `/api/reminder-chains` below rather than
+  this endpoint for those.
 - **`/api/expenses`**: full CRUD, plus `GET /api/expenses?period=MONTHLY` and
   `GET /api/expenses/summary?period=MONTHLY` (the latter backs the
   dashboard's spend widget — returns total, budget from `users.monthly_budget`,
@@ -50,6 +51,16 @@ verifies Clerk-issued JWTs, it never stores a password.
 - **`/api/device-tokens`**: POST to register a device's FCM token (upsert by
   token, so a device switching accounts moves over rather than duplicating),
   DELETE to unregister on sign-out.
+- **`/api/reminder-chains`**: Phase 2's headline feature. POST with a title
+  + target/expiry date generates a 45/30/15/7/1-day cascade of ONE_TIME
+  reminders automatically — skipping any offset that's already passed (a
+  target date 10 days out only gets the 7-day and 1-day reminders). GET
+  lists chains with their generated reminders nested. DELETE cancels the
+  whole chain (soft — deactivates rather than deletes, so notification
+  history for offsets that already fired is preserved). The generated
+  reminders are ordinary rows in the `reminders` table (chain_id +
+  offset_days link them back) — `ReminderNotificationScheduler` fires them
+  exactly like any other reminder, no special-casing needed there.
 - **`/api/notifications`**: read-only history of what's actually been sent
   to the user (as opposed to what's merely scheduled).
 - **Reminder → push notification loop**: `ReminderNotificationScheduler`

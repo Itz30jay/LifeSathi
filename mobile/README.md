@@ -65,7 +65,9 @@ app/                    Expo Router routes (file-based)
   (app)/_layout.tsx     Tab bar (Home/Tasks/Reminders/Expenses) + auth guard
   (app)/index.tsx       Home/dashboard tab
   (app)/tasks.tsx       Task list + add form, full CRUD against the API
-  (app)/reminders.tsx   Reminder list + add form (native date/time picker)
+  (app)/reminders.tsx   Reminders tab — standalone reminders AND expiry
+                         cascades (Phase 2's headline feature: give a title +
+                         expiry date, get 45/30/15/7/1-day reminders back)
   (app)/expenses.tsx    Expense list + add form, re-pulls the month summary after writes
   (app)/profile.tsx     View/edit name, language, monthly budget; sign out (incl.
                          unregistering the device's FCM token)

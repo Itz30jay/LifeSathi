@@ -17,4 +17,6 @@ public interface ReminderRepository extends JpaRepository<Reminder, UUID> {
     // Field is named `active` (not `isActive`), so the derived query
     // keyword is ActiveTrue, matching the entity property exactly.
     List<Reminder> findByActiveTrueAndRemindAtLessThanEqual(Instant now);
+
+    List<Reminder> findByChainIdOrderByRemindAtAsc(UUID chainId);
 }
