@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # LifeSathi
 
 "Everything important in life, in one place." Personal life-management app —
@@ -76,3 +77,6 @@ English sentence.
 React Native · Spring Boot · PostgreSQL (Neon) · Clerk · Ollama (self-hosted
 AI, Phase 2+) · OpenStreetMap · Firebase Cloud Messaging · Render. All
 free-tier / open-source; MIT/Apache-2.0/BSD dependencies only.
+=======
+# LifeSathi
+>>>>>>> ab2255442d016241626058163305b515cb010fb7
