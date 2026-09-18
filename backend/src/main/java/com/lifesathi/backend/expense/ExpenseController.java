@@ -34,10 +34,16 @@ import java.util.UUID;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
+    private final ExpenseAnalyticsService expenseAnalyticsService;
     private final CurrentUserService currentUserService;
 
-    public ExpenseController(ExpenseService expenseService, CurrentUserService currentUserService) {
+    public ExpenseController(
+            ExpenseService expenseService,
+            ExpenseAnalyticsService expenseAnalyticsService,
+            CurrentUserService currentUserService
+    ) {
         this.expenseService = expenseService;
+        this.expenseAnalyticsService = expenseAnalyticsService;
         this.currentUserService = currentUserService;
     }
 
@@ -57,6 +63,16 @@ public class ExpenseController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         return expenseService.summarize(currentUserService.resolve(jwt).getId(), period, date);
+    }
+
+    /** Phase 2 module #10 — factual category breakdown + period-over-period comparison, no generated prose. */
+    @GetMapping("/analytics")
+    public ExpenseAnalyticsResponse analytics(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(defaultValue = "MONTHLY") ExpensePeriod period,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        return expenseAnalyticsService.analyze(currentUserService.resolve(jwt).getId(), period, date);
     }
 
     @PostMapping

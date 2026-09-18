@@ -38,4 +38,13 @@ public final class ExpensePeriodCalculator {
         }
         return new Bounds(start.atStartOfDay(zone).toInstant(), endExclusive.atStartOfDay(zone).toInstant());
     }
+
+    /** The reference date for "the period immediately before this one" — e.g. last month, for comparisons. */
+    public static LocalDate previousReference(ExpensePeriod period, LocalDate reference) {
+        return switch (period) {
+            case DAILY -> reference.minusDays(1);
+            case WEEKLY -> reference.minusWeeks(1);
+            case MONTHLY -> reference.minusMonths(1);
+        };
+    }
 }

@@ -52,6 +52,15 @@ verifies Clerk-issued JWTs, it never stores a password.
   case-sensitive. Period boundaries are computed in `Asia/Kolkata` — see the
   comment in `ExpenseService` for why that's a reasonable fixed default for
   now rather than genuinely per-user timezone logic.
+- **`/api/expenses/analytics`**: Phase 2 module #10. Category breakdown for
+  the period plus a period-over-period percent change, both overall and
+  per category. Deliberately returns numbers only, never generated
+  sentences — "factual pattern description only, never advice" is easiest
+  to guarantee by not generating natural-language text server-side at all,
+  rather than generating it carefully. The client composes the actual
+  "Food spending is up 18%" phrasing from these numbers. A category with no
+  spending last period gets `percentChange: null` (not an infinite or
+  zero percentage) — the client shows "new this period" for that case.
 - Every list/update/delete endpoint scopes its query by the authenticated
   user's id, not just the row id — see the comment on `findByIdAndUserId` in
   each repository for why that matters.

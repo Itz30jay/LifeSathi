@@ -1,8 +1,9 @@
 import { useAuth } from '@clerk/expo';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import ExpensesScreen, { type ExpenseItem } from '../../src/screens/ExpensesScreen';
+import ExpensesScreen, { type ExpenseItem, type ExpenseAnalytics } from '../../src/screens/ExpensesScreen';
 import { createExpense, deleteExpense, fetchExpenseSummary, fetchExpenses } from '../../src/api/expenses';
+import { fetchExpenseAnalytics } from '../../src/api/expenseAnalytics';
 import { colors } from '../../src/theme';
 
 export default function ExpensesRoute() {
@@ -10,15 +11,17 @@ export default function ExpensesRoute() {
   const [expenses, setExpenses] = useState<ExpenseItem[] | null>(null);
   const [monthTotal, setMonthTotal] = useState(0);
   const [monthBudget, setMonthBudget] = useState<number | null>(null);
+  const [analytics, setAnalytics] = useState<ExpenseAnalytics | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
 
   const load = useCallback(async () => {
     try {
       const token = await getToken();
-      const [remote, summary] = await Promise.all([
+      const [remote, summary, analyticsResponse] = await Promise.all([
         fetchExpenses(token, 'MONTHLY'),
         fetchExpenseSummary(token, 'MONTHLY'),
+        fetchExpenseAnalytics(token, 'MONTHLY'),
       ]);
       setExpenses(
         remote.map((e) => ({
@@ -31,6 +34,14 @@ export default function ExpensesRoute() {
       );
       setMonthTotal(summary.total);
       setMonthBudget(summary.budget);
+      setAnalytics({
+        overallPercentChange: analyticsResponse.overallPercentChange,
+        categoryInsights: analyticsResponse.categoryInsights.map((c) => ({
+          category: c.category,
+          currentTotal: c.currentTotal,
+          percentChange: c.percentChange,
+        })),
+      });
       setError(null);
     } catch (err: any) {
       setError(err?.message ?? 'Could not load expenses.');
@@ -86,6 +97,7 @@ export default function ExpensesRoute() {
       expenses={expenses}
       monthTotal={monthTotal}
       monthBudget={monthBudget}
+      analytics={analytics}
       creating={creating}
       onCreate={handleCreate}
       onDelete={handleDelete}

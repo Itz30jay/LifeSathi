@@ -59,6 +59,22 @@ class ExpensePeriodCalculatorTest {
         assertThat(bounds.endExclusive()).isEqualTo(atMidnight(2027, 1, 1));
     }
 
+    @Test
+    void previousReferenceStepsBackByOnePeriodUnit() {
+        LocalDate ref = LocalDate.of(2026, 9, 15);
+
+        assertThat(ExpensePeriodCalculator.previousReference(ExpensePeriod.DAILY, ref)).isEqualTo(LocalDate.of(2026, 9, 14));
+        assertThat(ExpensePeriodCalculator.previousReference(ExpensePeriod.WEEKLY, ref)).isEqualTo(LocalDate.of(2026, 9, 8));
+        assertThat(ExpensePeriodCalculator.previousReference(ExpensePeriod.MONTHLY, ref)).isEqualTo(LocalDate.of(2026, 8, 15));
+    }
+
+    @Test
+    void previousReferenceHandlesMonthlyYearRollover() {
+        LocalDate ref = LocalDate.of(2026, 1, 15);
+
+        assertThat(ExpensePeriodCalculator.previousReference(ExpensePeriod.MONTHLY, ref)).isEqualTo(LocalDate.of(2025, 12, 15));
+    }
+
     private static java.time.Instant atMidnight(int year, int month, int day) {
         return ZonedDateTime.of(year, month, day, 0, 0, 0, 0, IST).toInstant();
     }

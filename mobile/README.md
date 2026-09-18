@@ -68,7 +68,9 @@ app/                    Expo Router routes (file-based)
   (app)/reminders.tsx   Reminders tab — standalone reminders AND expiry
                          cascades (Phase 2's headline feature: give a title +
                          expiry date, get 45/30/15/7/1-day reminders back)
-  (app)/expenses.tsx    Expense list + add form, re-pulls the month summary after writes
+  (app)/expenses.tsx    Expense list + add form, re-pulls the month summary
+                         after writes; now shows a factual spending-insights
+                         block (Phase 2 module #10) above the list
   (app)/calendar.tsx    Month agenda merging task due dates, reminders, and
                          expiry dates into one timeline (Phase 2 module #9)
   (app)/profile.tsx     View/edit name, language, monthly budget; sign out (incl.
